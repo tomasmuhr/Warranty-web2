@@ -6,7 +6,7 @@
 
 The Warranty Tracker App allows you to store information about your purchased items and tracks their warranties.
 
-On the **`vue` branch**, the app uses a **Vue 3** frontend and **FastAPI** backend with the same SQLite database schema as the original Flask app.
+The app uses a **Vue 3** frontend and **FastAPI** backend with the SQLite database..
 
 ## Features
 
@@ -51,7 +51,7 @@ On the **`vue` branch**, the app uses a **Vue 3** frontend and **FastAPI** backe
     - **Backend API (FastAPI):** http://localhost:8000/api/health
     - **API docs:** http://localhost:8000/docs
 
-The SQLite database is stored in `./instance/warranty.db` and is shared with the FastAPI container via a volume mount. Existing databases from the Flask app are compatible.
+The SQLite database is stored in `./instance/warranty.db` and is shared with the FastAPI container via a volume mount.
 
 ## Local development
 

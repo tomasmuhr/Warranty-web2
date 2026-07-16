@@ -1,0 +1,32 @@
+name: warranty
+
+services:
+  fastapi:
+    build:
+      context: ./backend
+      target: production
+    container_name: warranty-fastapi
+    restart: always
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    environment:
+      - APP_ENV=production
+      - DB_DIR=/app/instance
+      - DB_NAME=warranty.db
+      - DB_NAME_BACKUP=warranty_bkp.db
+      - CORS_ORIGINS=http://localhost:8080,http://localhost:5173
+    volumes:
+      - ./instance:/app/instance
+
+  vue:
+    build:
+      context: ./frontend
+      target: production
+    container_name: warranty-vue
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - fastapi

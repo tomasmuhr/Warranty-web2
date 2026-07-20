@@ -2,6 +2,7 @@ name: warranty
 
 services:
   backend:
+    image: warranty-backend:prod
     build:
       context: ./backend
       target: production
@@ -15,6 +16,7 @@ services:
       - ./instance:/app/instance
 
   frontend:
+    image: warranty-frontend:prod
     build:
       context: ./frontend
       target: production

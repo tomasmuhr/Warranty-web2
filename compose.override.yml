@@ -1,5 +1,6 @@
 services:
   backend:
+    image: warranty-backend:dev
     build:
       context: ./backend
       target: development
@@ -23,6 +24,7 @@ services:
           path: ./backend/requirements.txt
 
   frontend:
+    image: warranty-frontend:dev
     build:
       context: ./frontend
       target: development

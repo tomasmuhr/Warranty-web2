@@ -1,28 +1,28 @@
 services:
-  fastapi:
+  backend:
     build:
       context: ./backend
       target: development
     restart: "no"
     environment:
       - APP_ENV=development
-    volumes:
-      - ./backend:/app
-    # develop:
-    #   watch:
-    #     # Sync backend files and reload the FastAPI development server automatically
-    #     - action: sync
-    #       path: ./backend
-    #       target: /app
-    #       ignore:
-    #         - __pycache__/
-    #         - .pytest_cache/
-    #         - .venv/
-    #     # If requirements.txt changes, rebuild the container completely
-    #     - action: rebuild
-    #       path: ./backend/requirements.txt
+    # volumes:
+    #   - ./backend:/app
+    develop:
+      watch:
+        # Sync backend files and reload the FastAPI development server automatically
+        - action: sync
+          path: ./backend
+          target: /app
+          ignore:
+            - __pycache__/
+            - .pytest_cache/
+            - .venv/
+        # If requirements.txt changes, rebuild the container completely
+        - action: rebuild
+          path: ./backend/requirements.txt
 
-  vue:
+  frontend:
     build:
       context: ./frontend
       target: development
@@ -31,14 +31,14 @@ services:
       - "5173:5173"
     # volumes:
     #   - ./frontend:/app
-    # develop:
-    #   watch:
-    #     # Sync frontend source code files to enable Vite's native Hot Module Replacement (HMR)
-    #     - action: sync
-    #       path: ./frontend
-    #       target: /app
-    #       ignore:
-    #         - node_modules/
-    #     # If package.json changes, rebuild the image to pull in new node_modules
-    #     - action: rebuild
-    #       path: ./frontend/package.json
+    develop:
+      watch:
+        # Sync frontend source code files to enable Vite's native Hot Module Replacement (HMR)
+        - action: sync
+          path: ./frontend
+          target: /app
+          ignore:
+            - node_modules/
+        # If package.json changes, rebuild the image to pull in new node_modules
+        - action: rebuild
+          path: ./frontend/package.json

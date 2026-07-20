@@ -15,7 +15,7 @@ The app uses a **Vue 3** frontend and **FastAPI** backend with the SQLite databa
 3. **Database** — backup, restore, and purge the SQLite database
 4. **Search** — search items and shops by name, comment, address, etc.
 
-## Stack (vue branch)
+## Stack
 
 | Layer    | Technology                           |
 | -------- | ------------------------------------ |
@@ -25,18 +25,18 @@ The app uses a **Vue 3** frontend and **FastAPI** backend with the SQLite databa
 
 ## Requirements
 
-- **Docker** (recommended): https://www.docker.com/
+- **Docker** (recommended):
+    - https://www.docker.com/
 - **Local development** (optional):
     - Python 3.12+
     - Node.js 20+
 
 ## Quick start with Docker
 
-1. Clone the repository and switch to the `vue` branch:
+1. Clone the repository:
     ```bash
     git clone https://github.com/tomasmuhr/Warranty-web2.git
     cd Warranty-web2
-    git checkout vue
     ```
 2. Copy environment file:
     ```bash
@@ -44,7 +44,7 @@ The app uses a **Vue 3** frontend and **FastAPI** backend with the SQLite databa
     ```
 3. Start services:
     ```bash
-    docker compose up --build
+    docker compose -f compose.yml up
     ```
 4. Open the app:
     - **Frontend (Vue):** http://localhost:8080

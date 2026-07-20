@@ -1,21 +1,3 @@
-<script setup>
-	import { computed, ref } from "vue";
-	import { useRoute, useRouter } from "vue-router";
-
-	const route = useRoute();
-	const router = useRouter();
-	const query = ref(route.query.q || "");
-
-	const navClass = (name) =>
-		route.name === name ? "nav-link highlighted" : "nav-link";
-
-	async function submitSearch() {
-		const trimmed = query.value.trim();
-		if (!trimmed) return;
-		await router.push({ name: "search", query: { q: trimmed } });
-	}
-</script>
-
 <template>
 	<nav class="navbar navbar-light navbar-expand-md shadow fixed-top">
 		<div class="container">
@@ -85,3 +67,21 @@
 		</div>
 	</nav>
 </template>
+
+<script setup>
+	import { computed, ref } from "vue";
+	import { useRoute, useRouter } from "vue-router";
+
+	const route = useRoute();
+	const router = useRouter();
+	const query = ref(route.query.q || "");
+
+	const navClass = (name) =>
+		route.name === name ? "nav-link highlighted" : "nav-link";
+
+	async function submitSearch() {
+		const trimmed = query.value.trim();
+		if (!trimmed) return;
+		await router.push({ name: "search", query: { q: trimmed } });
+	}
+</script>

@@ -7,7 +7,8 @@ services:
     restart: "no"
     environment:
       - APP_ENV=development
-    # volumes:
+      - RECORDS_PER_PAGE=5
+    # volumes: # replaced by develop.watch
     #   - ./backend:/app
     develop:
       watch:
@@ -31,7 +32,7 @@ services:
     restart: "no"
     ports:
       - "5173:5173"
-    # volumes:
+    # volumes: # replaced by develop.watch
     #   - ./frontend:/app
     develop:
       watch:

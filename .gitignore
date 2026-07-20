@@ -1,10 +1,4 @@
-# own
-.flaskenv
-logs/
-app/data/
-warranty.db
-
-
+# Own
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,10 +1,10 @@
 <template>
 	<nav class="navbar navbar-light navbar-expand-md shadow fixed-top">
 		<div class="container">
-			<RouterLink
+			<router-link
 				class="navbar-brand"
 				to="/"
-				><b>Warranty App</b></RouterLink
+				><b>Warranty App</b></router-link
 			>
 			<button
 				class="navbar-toggler"
@@ -22,25 +22,25 @@
 				id="navbarNav"
 			>
 				<div class="navbar-nav">
-					<RouterLink
+					<router-link
 						:class="navClass('items')"
 						to="/items"
-						>Items</RouterLink
+						>Items</router-link
 					>
-					<RouterLink
+					<router-link
 						:class="navClass('shops')"
 						to="/shops"
-						>Shops</RouterLink
+						>Shops</router-link
 					>
-					<RouterLink
+					<router-link
 						:class="navClass('database')"
 						to="/database"
-						>Database</RouterLink
+						>Database</router-link
 					>
-					<RouterLink
+					<router-link
 						:class="navClass('about')"
 						to="/about"
-						>About</RouterLink
+						>About</router-link
 					>
 				</div>
 			</div>

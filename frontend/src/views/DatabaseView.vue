@@ -1,5 +1,5 @@
 <template>
-	<AlertMessage
+	<alert-message
 		:message="alert.message"
 		:type="alert.type"
 		@close="alert.message = ''"

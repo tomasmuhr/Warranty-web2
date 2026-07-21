@@ -1,55 +1,104 @@
 <template>
-	<div
-		class="modal fade"
-		:id="modalId"
-		tabindex="-1"
-		aria-hidden="true"
-	>
-		<div class="modal-dialog modal-md">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Shop details</h5>
-					<button
-						type="button"
-						class="btn-close"
-						data-bs-dismiss="modal"
-						aria-label="Close"
-					></button>
+	<base-modal id="shopFormModal">
+		<template #title>
+			{{ isEdit ? "Record update" : "Shop details" }}
+		</template>
+
+		<template #body>
+			<!-- Notice the specific ID given to this form -->
+			<form
+				@submit.prevent="handleSubmit"
+				id="shopForm"
+			>
+				<div class="mb-2">
+					<label class="form-label">Name*</label>
+					<input
+						v-model="form.name"
+						class="form-control form-control-sm"
+						required
+					/>
+				</div>
+				<div class="mb-2">
+					<label class="form-label">Street</label>
+					<input
+						v-model="form.street"
+						class="form-control form-control-sm"
+					/>
+				</div>
+				<div class="mb-2">
+					<label class="form-label">City</label>
+					<input
+						v-model="form.city"
+						class="form-control form-control-sm"
+					/>
+				</div>
+				<div class="mb-2">
+					<label class="form-label">Zip Code</label>
+					<input
+						v-model="form.zip_code"
+						class="form-control form-control-sm"
+					/>
 				</div>
 				<div
-					v-if="shop"
-					class="modal-body"
+					v-if="!isEdit"
+					class="text-danger mt-2"
 				>
-					<h5>{{ shop.name }}</h5>
-					<table class="table table-striped table-hover">
-						<tbody>
-							<tr>
-								<td>Street</td>
-								<td>{{ shop.street }}</td>
-							</tr>
-							<tr>
-								<td>City</td>
-								<td>{{ shop.city }}</td>
-							</tr>
-							<tr>
-								<td>Zip code</td>
-								<td>{{ shop.zip_code }}</td>
-							</tr>
-							<tr>
-								<td>Linked warranties</td>
-								<td>{{ shop.items_count }}</td>
-							</tr>
-						</tbody>
-					</table>
+					* required field
 				</div>
-			</div>
-		</div>
-	</div>
+			</form>
+		</template>
+
+		<!-- Injecting the submit button into the footer slot -->
+		<template #footer>
+			<button
+				type="button"
+				class="btn btn-sm btn-secondary"
+				data-bs-dismiss="modal"
+			>
+				Cancel
+			</button>
+			<!-- The 'form' attribute links this button to the form above -->
+			<button
+				type="submit"
+				form="shopForm"
+				class="btn btn-sm btn-primary"
+				data-bs-dismiss="modal"
+			>
+				{{ isEdit ? "Update record" : "Add shop" }}
+			</button>
+		</template>
+	</base-modal>
 </template>
 
 <script setup>
-	defineProps({
-		modalId: { type: String, required: true },
-		shop: { type: Object, default: null },
+	import { ref, computed, watch } from "vue";
+	import BaseModal from "../base/BaseModal.vue";
+
+	const props = defineProps({
+		shop: { type: Object, default: () => null },
 	});
+
+	const emit = defineEmits(["save"]);
+
+	const form = ref({ name: "", street: "", city: "", zip_code: "" });
+	const isEdit = computed(() => !!props.shop && !!props.shop.id);
+
+	watch(
+		() => props.shop,
+		(newShop) => {
+			if (newShop) {
+				form.value = { ...newShop };
+			} else {
+				form.value = { name: "", street: "", city: "", zip_code: "" };
+			}
+		},
+		{ immediate: true },
+	);
+
+	function handleSubmit() {
+		emit("save", {
+			id: isEdit.value ? props.shop.id : null,
+			data: form.value,
+		});
+	}
 </script>

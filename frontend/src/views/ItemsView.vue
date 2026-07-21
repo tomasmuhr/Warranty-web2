@@ -15,8 +15,7 @@
 			Add new item
 		</button>
 
-		<!-- Re-added the Add Item Modal component -->
-		<item-details-modal
+		<item-form-modal
 			modal-id="itemAdd"
 			title="Item details"
 			submit-text="Add item"
@@ -68,7 +67,7 @@
 	import AlertMessage from "../components/AlertMessage.vue";
 	// import ConfirmDeleteButton from "../components/ConfirmDeleteButton.vue";
 	import PaginationBar from "../components/PaginationBar.vue";
-	// import ItemDetailsModal from "../components/items/ItemDetailsModal.vue";
+	import ItemFormModal from "../components/items/ItemFormModal.vue";
 	// import ShopDetailsModal from "../components/shops/ShopDetailsModal.vue";
 	import ItemRow from "../components/items/ItemRow.vue";
 	import {

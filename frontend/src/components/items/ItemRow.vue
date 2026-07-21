@@ -42,13 +42,13 @@
 		v-for="item in items"
 		:key="`modals-${item.id}`"
 	>
-		<shop-details-modal
+		<shop-form-modal
 			v-if="item.shop_id"
 			:modal-id="`shopView_${item.id}`"
 			:shop="shopDetails[item.shop_id]"
 		/>
 
-		<item-details-modal
+		<item-form-modal
 			:modal-id="`itemEdit_${item.id}`"
 			title="Record update"
 			submit-text="Update record"
@@ -60,9 +60,10 @@
 </template>
 
 <script setup>
+	import { ref } from "vue";
 	import ConfirmDeleteButton from "../ConfirmDeleteButton.vue";
-	import ItemDetailsModal from "./ItemDetailsModal.vue";
-	import ShopDetailsModal from "../shops/ShopDetailsModal.vue";
+	import ItemFormModal from "./ItemFormModal.vue";
+	import ShopFormModal from "../shops/ShopFormModal.vue";
 
 	defineProps({
 		item: { type: Object, required: true },

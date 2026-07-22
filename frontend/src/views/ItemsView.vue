@@ -1,5 +1,5 @@
 <template>
-	<alert-message
+	<BaseMessage
 		:message="alert.message"
 		:type="alert.type"
 		@close="alert.message = ''"
@@ -15,15 +15,17 @@
 			Add new item
 		</button>
 
-		<item-form-modal
-			modal-id="itemAdd"
-			title="Item details"
-			submit-text="Add item"
-			:shops="shopSelectOptions"
-			:initial-data="addForm"
-			:is-add="true"
-			@submit="submitAdd"
-		/>
+		<base-modal>
+			<item-form
+				modal-id="itemAdd"
+				title="Item details"
+				submit-text="Add item"
+				:shops="shopSelectOptions"
+				:initial-data="addForm"
+				:is-add="true"
+				@submit="submitAdd"
+			/>
+		</base-modal>
 	</div>
 
 	<hr />
@@ -64,11 +66,9 @@
 
 <script setup>
 	import { computed, onMounted, reactive, ref } from "vue";
-	import AlertMessage from "../components/AlertMessage.vue";
-	// import ConfirmDeleteButton from "../components/ConfirmDeleteButton.vue";
-	import PaginationBar from "../components/PaginationBar.vue";
-	import ItemFormModal from "../components/items/ItemFormModal.vue";
-	// import ShopDetailsModal from "../components/shops/ShopDetailsModal.vue";
+	import BaseMessage from "../components/base/BaseMessage.vue";
+	import PaginationBar from "../components/layout/PaginationBar.vue";
+	import ItemForm from "../components/items/ItemForm.vue";
 	import ItemRow from "../components/items/ItemRow.vue";
 	import {
 		createItem,

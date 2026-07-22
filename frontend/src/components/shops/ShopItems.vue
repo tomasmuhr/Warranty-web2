@@ -9,7 +9,7 @@
 		</template>
 
 		<template #body>
-			<warranty-items-table
+			<item-warranties
 				v-if="itemsData"
 				:under-warranty="itemsData.under_warranty"
 				:out-of-warranty="itemsData.out_of_warranty"
@@ -26,7 +26,7 @@
 
 <script setup>
 	import BaseModal from "../base/BaseModal.vue";
-	import WarrantyItemsTable from "../WarrantyItemsTable.vue";
+	import ItemWarranties from "../items/ItemWarranties.vue";
 
 	defineProps({
 		shop: { type: Object, default: () => null },

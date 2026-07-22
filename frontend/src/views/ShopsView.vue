@@ -1,5 +1,5 @@
 <template>
-	<alert-message
+	<BaseMessage
 		:message="alert.message"
 		:type="alert.type"
 		@close="alert.message = ''"
@@ -85,15 +85,15 @@
 	/>
 
 	<!-- Extracted Modals -->
-	<shop-form-modal
+	<shop-form
 		:shop="targetShop"
 		@save="handleSaveShop"
 	/>
-	<shop-delete-modal
+	<shop-delete
 		:shop="targetShop"
 		@confirm="handleDeleteShop"
 	/>
-	<shop-items-modal
+	<shop-items
 		:shop="targetShop"
 		:items-data="warrantyItems[targetShop?.id]"
 	/>
@@ -101,11 +101,11 @@
 
 <script setup>
 	import { onMounted, reactive, ref } from "vue";
-	import AlertMessage from "../components/AlertMessage.vue";
-	import PaginationBar from "../components/PaginationBar.vue";
-	import ShopFormModal from "../components/shops/ShopFormModal.vue";
-	import ShopDeleteModal from "../components/shops/ShopDeleteModal.vue";
-	import ShopItemsModal from "../components/shops/ShopItemsModal.vue";
+	import BaseMessage from "../components/base/BaseMessage.vue";
+	import PaginationBar from "../components/layout/PaginationBar.vue";
+	import ShopForm from "../components/shops/ShopForm.vue";
+	import ShopDelete from "../components/shops/ShopDelete.vue";
+	import ShopItems from "../components/shops/ShopItems.vue";
 	import {
 		createShop,
 		deleteShop,

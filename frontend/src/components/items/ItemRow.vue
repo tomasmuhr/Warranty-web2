@@ -48,7 +48,7 @@
 			:shop="shopDetails[item.shop_id]"
 		/>
 
-		<item-form-modal
+		<item-form
 			:modal-id="`itemEdit_${item.id}`"
 			title="Record update"
 			submit-text="Update record"
@@ -62,8 +62,8 @@
 <script setup>
 	import { ref } from "vue";
 	import ConfirmDeleteButton from "../ConfirmDeleteButton.vue";
-	import ItemFormModal from "./ItemFormModal.vue";
-	import ShopFormModal from "../shops/ShopFormModal.vue";
+	import ItemForm from "./ItemForm.vue";
+	import ShopFormModal from "../shops/ShopForm.vue";
 
 	defineProps({
 		item: { type: Object, required: true },

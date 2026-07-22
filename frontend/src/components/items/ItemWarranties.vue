@@ -1,10 +1,10 @@
 <template>
 	<div>
-		<h6>Under warranty</h6>
+		<h6 class="green">Under warranty</h6>
 		<span v-if="!underWarranty.length">None.</span>
 		<table
 			v-else
-			class="table table-striped table-hover"
+			class="table table-striped table-hover table-sm"
 		>
 			<thead>
 				<tr>
@@ -27,11 +27,11 @@
 
 		<br /><br />
 
-		<h6>Out of warranty</h6>
+		<h6 class="red">Out of warranty</h6>
 		<span v-if="!outOfWarranty.length">None.</span>
 		<table
 			v-else
-			class="table table-striped table-hover"
+			class="table table-striped table-hover table-sm"
 		>
 			<thead>
 				<tr>

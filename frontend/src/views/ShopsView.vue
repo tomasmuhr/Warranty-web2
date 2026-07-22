@@ -78,7 +78,7 @@
 		</tbody>
 	</table>
 
-	<pagination-bar
+	<PaginationBar
 		:page="page"
 		:pages="pages"
 		@change="loadShops"

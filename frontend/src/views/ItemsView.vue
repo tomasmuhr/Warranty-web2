@@ -10,22 +10,11 @@
 			type="button"
 			class="btn btn-sm btn-primary"
 			data-bs-toggle="modal"
-			data-bs-target="#itemAdd"
+			data-bs-target="#itemFormModal"
+			@click="targetItem = null"
 		>
 			Add new item
 		</button>
-
-		<base-modal>
-			<item-form
-				modal-id="itemAdd"
-				title="Item details"
-				submit-text="Add item"
-				:shops="shopSelectOptions"
-				:initial-data="addForm"
-				:is-add="true"
-				@submit="submitAdd"
-			/>
-		</base-modal>
 	</div>
 
 	<hr />
@@ -47,25 +36,33 @@
 			</tr>
 		</thead>
 		<tbody>
-			<item-row
+			<ItemRow
 				v-for="item in items"
 				:key="item.id"
 				:item="item"
+				@edit="targetItem = item"
 				@open-shop="openShopDetails"
 				@delete="removeItem"
-			></item-row>
+			></ItemRow>
 		</tbody>
 	</table>
 
-	<pagination-bar
+	<PaginationBar
 		:page="page"
 		:pages="pages"
 		@change="loadItems"
 	/>
+
+	<!-- Extracted Single Form Modal -->
+	<ItemForm
+		:item="targetItem"
+		:shops="shopChoices"
+		@save="handleSaveItem"
+	/>
 </template>
 
 <script setup>
-	import { computed, onMounted, reactive, ref } from "vue";
+	import { onMounted, reactive, ref } from "vue";
 	import BaseMessage from "../components/base/BaseMessage.vue";
 	import PaginationBar from "../components/layout/PaginationBar.vue";
 	import ItemForm from "../components/items/ItemForm.vue";
@@ -84,53 +81,13 @@
 	const page = ref(1);
 	const pages = ref(1);
 	const alert = reactive({ message: "", type: "success" });
+
+	const targetItem = ref(null);
 	const shopDetails = ref({});
-
-	const addForm = reactive({
-		name: "",
-		shop_id: "",
-		receipt_nr: "",
-		amount: "",
-		price_per_piece: "",
-		comment: "",
-		purchase_date: new Date().toISOString().slice(0, 10),
-		warranty_months: 12,
-	});
-
-	const editForms = ref({});
-
-	const shopSelectOptions = computed(() => shopChoices.value);
 
 	function showAlert(message, type = "success") {
 		alert.message = message;
 		alert.type = type;
-	}
-
-	function emptyAddForm() {
-		addForm.name = "";
-		addForm.shop_id = "";
-		addForm.receipt_nr = "";
-		addForm.amount = "";
-		addForm.price_per_piece = "";
-		addForm.comment = "";
-		addForm.purchase_date = new Date().toISOString().slice(0, 10);
-		addForm.warranty_months = 12;
-	}
-
-	function buildPayload(form) {
-		return {
-			name: form.name,
-			shop_id: form.shop_id ? Number(form.shop_id) : null,
-			receipt_nr: form.receipt_nr,
-			amount: form.amount === "" ? null : Number(form.amount),
-			price_per_piece:
-				form.price_per_piece === ""
-					? null
-					: Number(form.price_per_piece),
-			comment: form.comment,
-			purchase_date: form.purchase_date,
-			warranty_months: Number(form.warranty_months),
-		};
 	}
 
 	async function loadItems(targetPage = page.value) {
@@ -138,21 +95,6 @@
 		items.value = data.items;
 		page.value = data.page;
 		pages.value = data.pages;
-		editForms.value = Object.fromEntries(
-			data.items.map((item) => [
-				item.id,
-				{
-					name: item.name,
-					shop_id: item.shop_id ?? "",
-					receipt_nr: item.receipt_nr ?? "",
-					amount: item.amount ?? "",
-					price_per_piece: item.price_per_piece ?? "",
-					comment: item.comment ?? "",
-					purchase_date: item.purchase_date,
-					warranty_months: item.warranty_months,
-				},
-			]),
-		);
 	}
 
 	async function loadSupportData() {
@@ -163,28 +105,19 @@
 		await Promise.all([loadItems(), loadSupportData()]);
 	});
 
-	async function submitAdd() {
+	async function handleSaveItem({ id, data }) {
 		try {
-			await createItem(buildPayload(addForm));
-			showAlert("The record has been successfully added.");
-			emptyAddForm();
-			await Promise.all([loadItems(1), loadSupportData()]);
+			if (id) {
+				await updateItem(id, data);
+				showAlert("The record has been successfully edited.");
+			} else {
+				await createItem(data);
+				showAlert("The record has been successfully added.");
+			}
+			await Promise.all([loadItems(), loadSupportData()]);
 		} catch (error) {
 			showAlert(
-				error.response?.data?.detail || "Failed to add item.",
-				"danger",
-			);
-		}
-	}
-
-	async function submitEdit(itemId) {
-		try {
-			await updateItem(itemId, buildPayload(editForms.value[itemId]));
-			showAlert("The record has been successfully edited.");
-			await loadItems();
-		} catch (error) {
-			showAlert(
-				error.response?.data?.detail || "Failed to update item.",
+				error.response?.data?.detail || "Operation failed.",
 				"danger",
 			);
 		}

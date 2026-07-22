@@ -7,8 +7,6 @@
 				v-if="item.shop_name"
 				type="button"
 				class="btn btn-outline-primary btn-sm"
-				data-bs-toggle="modal"
-				:data-bs-target="`#shopView_${item.id}`"
 				@click="$emit('open-shop', item.shop_id)"
 			>
 				{{ item.shop_name }}
@@ -26,7 +24,8 @@
 				type="button"
 				class="btn btn-primary btn-sm"
 				data-bs-toggle="modal"
-				:data-bs-target="`#itemEdit_${item.id}`"
+				data-bs-target="#itemFormModal"
+				@click="$emit('edit', item)"
 			>
 				Edit
 			</button>
@@ -38,36 +37,14 @@
 			</ConfirmDeleteButton>
 		</td>
 	</tr>
-	<div
-		v-for="item in items"
-		:key="`modals-${item.id}`"
-	>
-		<ShopFormModal
-			v-if="item.shop_id"
-			:modal-id="`shopView_${item.id}`"
-			:shop="shopDetails[item.shop_id]"
-		/>
-
-		<ItemForm
-			:modal-id="`itemEdit_${item.id}`"
-			title="Record update"
-			submit-text="Update record"
-			:shops="shopSelectOptions"
-			:initial-data="editForms[item.id]"
-			@submit="(payload) => submitEdit(item.id, payload)"
-		/>
-	</div>
 </template>
 
 <script setup>
-	import { ref } from "vue";
 	import ConfirmDeleteButton from "../utils/ConfirmDeleteButton.vue";
-	import ItemForm from "./ItemForm.vue";
-	import ShopFormModal from "../shops/ShopForm.vue";
 
 	defineProps({
 		item: { type: Object, required: true },
 	});
 
-	defineEmits(["delete", "open-shop"]);
+	defineEmits(["delete", "open-shop", "edit"]);
 </script>

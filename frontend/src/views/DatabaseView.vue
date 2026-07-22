@@ -1,5 +1,5 @@
 <template>
-	<alert-message
+	<BaseMessage
 		:message="alert.message"
 		:type="alert.type"
 		@close="alert.message = ''"
@@ -11,72 +11,40 @@
 
 	<div class="text-center">
 		<div class="row row-cols-1 row-cols-md-3 g-4">
-			<div class="col">
-				<div class="card h-100">
-					<a
-						:href="exportDatabaseUrl()"
-						class="card-link"
-					>
-						<div class="card-body pt-4">
-							<div class="card-icon">⬇️</div>
-							<h5 class="card-title mt-3">Backup DB</h5>
-							<p class="card-text">
-								Backup your database into a file.
-							</p>
-						</div>
-						<div class="card-footer">
-							<small class="text-muted">Backup DB</small>
-						</div>
-					</a>
-				</div>
-			</div>
+			<BaseCard
+				tag="a"
+				:href="exportDatabaseUrl()"
+				icon="⬇️"
+				title="Backup DB"
+				text="Backup your database to your local machine."
+				footerText="Backup DB"
+			/>
 
-			<div class="col">
-				<div class="card h-100">
-					<button
-						type="button"
-						class="btn btn-link card-link border-0 w-100 h-100"
-						data-bs-toggle="modal"
-						data-bs-target="#restoreDBModal"
-					>
-						<div class="card-body pt-4">
-							<div class="card-icon">⬆️</div>
-							<h5 class="card-title mt-3">Restore DB</h5>
-							<p class="card-text">
-								Restore your previously backed up database.
-							</p>
-						</div>
-						<div class="card-footer">
-							<small class="text-muted">Restore DB</small>
-						</div>
-					</button>
-				</div>
-			</div>
+			<BaseCard
+				tag="button"
+				type="button"
+				data-bs-toggle="modal"
+				data-bs-target="#restoreDBModal"
+				icon="⬆️"
+				title="Restore DB"
+				text="Restore your previously backed up database."
+				footerText="Restore DB"
+			/>
 
-			<div class="col">
-				<div class="card h-100">
-					<button
-						type="button"
-						class="btn btn-link card-link border-0 w-100 h-100"
-						data-bs-toggle="modal"
-						data-bs-target="#purgeDBModal"
-					>
-						<div class="card-body pt-4">
-							<div class="card-icon">🧹</div>
-							<h5 class="card-title mt-3">Purge DB</h5>
-							<p class="card-text">
-								Delete orphaned warranties and/or empty shops.
-							</p>
-						</div>
-						<div class="card-footer">
-							<small class="text-muted">Purge database</small>
-						</div>
-					</button>
-				</div>
-			</div>
+			<BaseCard
+				tag="button"
+				type="button"
+				data-bs-toggle="modal"
+				data-bs-target="#purgeDBModal"
+				icon="🧹"
+				title="Purge DB"
+				text="Delete orphaned warranties and/or empty shops."
+				footerText="Purge database"
+			/>
 		</div>
 	</div>
 
+	<!-- Modals remain unchanged below -->
 	<div
 		class="modal fade"
 		id="restoreDBModal"
@@ -201,7 +169,8 @@
 
 <script setup>
 	import { onMounted, reactive, ref } from "vue";
-	import AlertMessage from "../components/AlertMessage.vue";
+	import BaseMessage from "../components/base/BaseMessage.vue";
+	import BaseCard from "../components/base/BaseCard.vue"; // Adjust path as needed
 	import {
 		exportDatabaseUrl,
 		getDatabaseInfo,

@@ -1,5 +1,5 @@
 <template>
-	<base-modal id="shopFormModal">
+	<BaseModal id="shopFormModal">
 		<template #title>
 			{{ isEdit ? "Record update" : "Shop details" }}
 		</template>
@@ -39,12 +39,7 @@
 						class="form-control form-control-sm"
 					/>
 				</div>
-				<div
-					v-if="!isEdit"
-					class="text-danger mt-2"
-				>
-					* required field
-				</div>
+				<div class="text-danger mt-2 text-small">* required field</div>
 			</form>
 		</template>
 
@@ -67,7 +62,7 @@
 				{{ isEdit ? "Update record" : "Add shop" }}
 			</button>
 		</template>
-	</base-modal>
+	</BaseModal>
 </template>
 
 <script setup>

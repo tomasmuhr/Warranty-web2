@@ -17,7 +17,7 @@
 					></button>
 				</div>
 				<form @submit.prevent="handleSubmit">
-					<div class="modal-body text-start">
+					<div class="modal-body">
 						<div class="mb-2">
 							<label class="form-label">Name*</label>
 							<input
@@ -101,12 +101,7 @@
 						>
 							{{ submitText }}
 						</button>
-						<div
-							v-if="isAdd"
-							class="text-danger mt-2"
-						>
-							* required field
-						</div>
+						<div class="text-danger mt-2">* required field</div>
 					</div>
 				</form>
 			</div>

@@ -31,24 +31,24 @@
 				Edit
 			</button>
 
-			<confirm-delete-button @confirm="$emit('delete', item.id)">
+			<ConfirmDeleteButton @confirm="$emit('delete', item.id)">
 				Are you sure you want to delete this record?<br /><b>{{
 					item.name
 				}}</b>
-			</confirm-delete-button>
+			</ConfirmDeleteButton>
 		</td>
 	</tr>
 	<div
 		v-for="item in items"
 		:key="`modals-${item.id}`"
 	>
-		<shop-form-modal
+		<ShopFormModal
 			v-if="item.shop_id"
 			:modal-id="`shopView_${item.id}`"
 			:shop="shopDetails[item.shop_id]"
 		/>
 
-		<item-form
+		<ItemForm
 			:modal-id="`itemEdit_${item.id}`"
 			title="Record update"
 			submit-text="Update record"
@@ -61,7 +61,7 @@
 
 <script setup>
 	import { ref } from "vue";
-	import ConfirmDeleteButton from "../ConfirmDeleteButton.vue";
+	import ConfirmDeleteButton from "../utils/ConfirmDeleteButton.vue";
 	import ItemForm from "./ItemForm.vue";
 	import ShopFormModal from "../shops/ShopForm.vue";
 

@@ -1,6 +1,6 @@
 <template>
 	<!-- Wrap everything in the BaseModal and provide the required ID -->
-	<base-modal
+	<BaseModal
 		id="shopDeleteModal"
 		size="sm"
 	>
@@ -35,7 +35,7 @@
 				</button>
 			</div>
 		</template>
-	</base-modal>
+	</BaseModal>
 </template>
 
 <script setup>

@@ -17,7 +17,7 @@
 			<tbody>
 				<tr>
 					<td class="no-top-border">Tomáš Mühr</td>
-					<td class="no-top-border text-start">
+					<td class="no-top-border">
 						<p>
 							Currently working as a GIS Specialist with interest
 							in Python programming language.<br />

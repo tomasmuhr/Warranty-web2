@@ -57,11 +57,11 @@
 						>
 							Edit
 						</button>
-						<confirm-delete-button @confirm="removeItem(item.id)">
+						<ConfirmDeleteButton @confirm="removeItem(item.id)">
 							Are you sure you want to delete this record?<br /><b
 								>{{ item.name }}</b
 							>
-						</confirm-delete-button>
+						</ConfirmDeleteButton>
 					</td>
 				</tr>
 			</tbody>
@@ -147,7 +147,7 @@
 						></button>
 					</div>
 					<form @submit.prevent="submitItemEdit(item.id)">
-						<div class="modal-body text-start">
+						<div class="modal-body">
 							<div class="mb-2">
 								<label class="form-label">Name*</label>
 								<input
@@ -268,7 +268,7 @@
 						></button>
 					</div>
 					<form @submit.prevent="submitShopEdit(shop.id)">
-						<div class="modal-body text-start">
+						<div class="modal-body">
 							<div class="mb-2">
 								<label class="form-label">Name*</label>
 								<input
@@ -358,7 +358,7 @@
 	import { computed, onMounted, reactive, ref, watch } from "vue";
 	import { useRoute } from "vue-router";
 	import BaseMessage from "../components/base/BaseMessage.vue";
-	import ConfirmDeleteButton from "../components/ConfirmDeleteButton.vue";
+	import ConfirmDeleteButton from "../components/utils/ConfirmDeleteButton.vue";
 	import {
 		deleteItem,
 		deleteShop,

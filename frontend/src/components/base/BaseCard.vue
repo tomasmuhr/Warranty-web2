@@ -6,8 +6,7 @@
 				:is="tag"
 				class="card-link"
 				:class="{
-					'btn btn-link border-0 w-100 h-100 text-start':
-						tag === 'button',
+					'btn btn-link border-0 w-100 h-100': tag === 'button',
 				}"
 				v-bind="$attrs"
 			>

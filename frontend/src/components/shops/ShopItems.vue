@@ -1,5 +1,5 @@
 <template>
-	<base-modal
+	<BaseModal
 		id="shopItemsModal"
 		size="md"
 	>
@@ -9,7 +9,7 @@
 		</template>
 
 		<template #body>
-			<item-warranties
+			<ItemWarranties
 				v-if="itemsData"
 				:under-warranty="itemsData.under_warranty"
 				:out-of-warranty="itemsData.out_of_warranty"
@@ -21,7 +21,7 @@
 				Loading...
 			</div>
 		</template>
-	</base-modal>
+	</BaseModal>
 </template>
 
 <script setup>

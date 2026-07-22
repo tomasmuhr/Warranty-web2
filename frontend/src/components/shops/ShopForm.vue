@@ -75,7 +75,14 @@
 
 	const emit = defineEmits(["save"]);
 
-	const form = ref({ name: "", street: "", city: "", zip_code: "" });
+	const defaultFormState = {
+		name: "",
+		street: "",
+		city: "",
+		zip_code: "",
+	};
+	// const form = ref({ name: "", street: "", city: "", zip_code: "" });
+	const form = ref(defaultFormState);
 	const isEdit = computed(() => !!props.shop && !!props.shop.id);
 
 	watch(
@@ -84,7 +91,8 @@
 			if (newShop) {
 				form.value = { ...newShop };
 			} else {
-				form.value = { name: "", street: "", city: "", zip_code: "" };
+				// form.value = { name: "", street: "", city: "", zip_code: "" };
+				form.value = defaultFormState;
 			}
 		},
 		{ immediate: true },

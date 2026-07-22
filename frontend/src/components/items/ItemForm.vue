@@ -119,7 +119,8 @@
 
 	const emit = defineEmits(["save"]);
 
-	const defaultFormState = () => ({
+	// const defaultFormState = () => ({
+	const defaultFormState = {
 		name: "",
 		shop_id: "",
 		receipt_nr: "",
@@ -128,9 +129,10 @@
 		comment: "",
 		purchase_date: new Date().toISOString().slice(0, 10),
 		warranty_months: 12,
-	});
+	};
 
-	const form = ref(defaultFormState());
+	// const form = ref(defaultFormState());
+	const form = ref(defaultFormState);
 	const isEdit = computed(() => !!props.item && !!props.item.id);
 
 	watch(
@@ -150,7 +152,8 @@
 					warranty_months: newItem.warranty_months ?? 12,
 				};
 			} else {
-				form.value = defaultFormState();
+				// form.value = defaultFormState();
+				form.value = defaultFormState;
 			}
 		},
 		{ immediate: true },
@@ -168,7 +171,7 @@
 					form.value.price_per_piece === ""
 						? null
 						: Number(form.value.price_per_piece),
-				warranty_months: Number(form.warranty_months),
+				warranty_months: Number(form.value.warranty_months),
 			},
 		});
 	}

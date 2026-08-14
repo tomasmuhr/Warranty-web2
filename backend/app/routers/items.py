@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, func, select, asc, desc
 from sqlalchemy.orm import Session, joinedload
 
 from app.config import settings
@@ -9,6 +9,19 @@ from app.schemas import ItemCreate, ItemRead, ItemUpdate, PaginatedItems
 from app.utils import expiration_date, paginate
 
 router = APIRouter(prefix="/items", tags=["items"])
+
+SORTABLE_COLUMNS = {
+    "id": Item.id,
+    "name": Item.name,
+    "shop_name": func.lower(Shop.name),
+    "receipt_nr": Item.receipt_nr,
+    "amount": Item.amount,
+    "price_per_piece": Item.price_per_piece,
+    "comment": Item.comment,
+    "purchase_date": WarrantyDate.purchase_date,
+    "warranty_months": WarrantyDate.warranty_months,
+    "expiration_date": WarrantyDate.expiration_date,
+}
 
 
 def _item_read(item: Item) -> ItemRead:
@@ -29,20 +42,49 @@ def _item_read(item: Item) -> ItemRead:
     )
 
 
+# @router.get("", response_model=PaginatedItems)
+# def list_items(page: int = Query(1, ge=1), db: Session = Depends(get_db)):
+#     per_page = settings.records_per_page
+#     total = db.scalar(select(func.count()).select_from(Item)) or 0
+#     meta = paginate(total, page, per_page)
+
+#     items = db.scalars(
+#         select(Item)
+#         .options(joinedload(Item.dates), joinedload(Item.shop))
+#         .order_by(Item.id)
+#         .offset((meta["page"] - 1) * per_page)
+#         .limit(per_page)
+#     ).unique().all()
+
+
+#     return PaginatedItems(items=[_item_read(item) for item in items], **meta)
 @router.get("", response_model=PaginatedItems)
-def list_items(page: int = Query(1, ge=1), db: Session = Depends(get_db)):
+def list_items(
+    page: int = Query(1, ge=1),
+    sort_by: str = Query("id"),
+    sort_dir: str = Query("asc", pattern="^(asc|desc)$"),
+    db: Session = Depends(get_db),
+):
     per_page = settings.records_per_page
     total = db.scalar(select(func.count()).select_from(Item)) or 0
     meta = paginate(total, page, per_page)
 
-    items = db.scalars(
-        select(Item)
-        .options(joinedload(Item.dates), joinedload(Item.shop))
-        .order_by(Item.id)
-        .offset((meta["page"] - 1) * per_page)
-        .limit(per_page)
-    ).unique().all()
-
+    column = SORTABLE_COLUMNS.get(sort_by, Item.id)
+    order = asc(column) if sort_dir == "asc" else desc(column)
+    query = select(Item).options(joinedload(Item.dates), joinedload(Item.shop))
+    if sort_by == "shop_name":
+        query = query.outerjoin(Shop)
+    elif sort_by in {"purchase_date", "warranty_months", "expiration_date"}:
+        query = query.outerjoin(WarrantyDate)
+    items = (
+        db.scalars(
+            query.order_by(order, Item.id)  # stable tie-breaker
+            .offset((meta["page"] - 1) * per_page)
+            .limit(per_page)
+        )
+        .unique()
+        .all()
+    )
     return PaginatedItems(items=[_item_read(item) for item in items], **meta)
 
 
@@ -73,21 +115,29 @@ def create_item(payload: ItemCreate, db: Session = Depends(get_db)):
     db.add(item)
     db.commit()
     db.refresh(item)
-    item = db.scalars(
-        select(Item)
-        .options(joinedload(Item.dates), joinedload(Item.shop))
-        .where(Item.id == item.id)
-    ).unique().one()
+    item = (
+        db.scalars(
+            select(Item)
+            .options(joinedload(Item.dates), joinedload(Item.shop))
+            .where(Item.id == item.id)
+        )
+        .unique()
+        .one()
+    )
     return _item_read(item)
 
 
 @router.put("/{item_id}", response_model=ItemRead)
 def update_item(item_id: int, payload: ItemUpdate, db: Session = Depends(get_db)):
-    item = db.scalars(
-        select(Item)
-        .options(joinedload(Item.dates), joinedload(Item.shop))
-        .where(Item.id == item_id)
-    ).unique().one_or_none()
+    item = (
+        db.scalars(
+            select(Item)
+            .options(joinedload(Item.dates), joinedload(Item.shop))
+            .where(Item.id == item_id)
+        )
+        .unique()
+        .one_or_none()
+    )
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
 
@@ -106,12 +156,21 @@ def update_item(item_id: int, payload: ItemUpdate, db: Session = Depends(get_db)
     item.comment = payload.comment or ""
 
     if not item.dates:
-        item.dates.append(WarrantyDate(item_id=item.id, warranty_months=1, purchase_date=payload.purchase_date, expiration_date=payload.purchase_date))
+        item.dates.append(
+            WarrantyDate(
+                item_id=item.id,
+                warranty_months=1,
+                purchase_date=payload.purchase_date,
+                expiration_date=payload.purchase_date,
+            )
+        )
 
     warranty = item.dates[0]
     warranty.purchase_date = payload.purchase_date
     warranty.warranty_months = payload.warranty_months
-    warranty.expiration_date = expiration_date(payload.purchase_date, payload.warranty_months)
+    warranty.expiration_date = expiration_date(
+        payload.purchase_date, payload.warranty_months
+    )
 
     db.commit()
     db.refresh(item)

@@ -11,8 +11,14 @@ export async function getStats() {
   return data
 }
 
-export async function getItems(page = 1) {
-  const { data } = await api.get('/items', { params: { page } })
+// export async function getItems(page = 1) {
+//   const { data } = await api.get('/items', { params: { page } })
+//   return data
+// }
+export async function getItems(page = 1, sortBy = 'id', sortDir = 'asc') {
+  const { data } = await api.get('/items', {
+    params: { page, sort_by: sortBy, sort_dir: sortDir },
+  })
   return data
 }
 

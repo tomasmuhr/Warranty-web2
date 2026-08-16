@@ -59,3 +59,13 @@
 .red {
 	background-color: lightcoral;
 }
+
+th.sortable {
+	cursor: pointer;
+	user-select: none;
+	white-space: nowrap;
+}
+
+th.sortable:hover {
+	background-color: rgba(0, 0, 0, 0.05);
+}

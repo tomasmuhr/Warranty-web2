@@ -119,6 +119,11 @@
 		:shops="shopChoices"
 		@save="handleSaveItem"
 	/>
+
+	<ShopItems
+		:shop="targetShop"
+		:items-data="warrantyItems[targetShop?.id]"
+	/>
 </template>
 
 <script setup>
@@ -127,6 +132,7 @@
 	import PaginationBar from "../components/layout/PaginationBar.vue";
 	import ItemForm from "../components/items/ItemForm.vue";
 	import ItemRow from "../components/items/ItemRow.vue";
+	import ShopItems from "../components/shops/ShopItems.vue";
 	import SortableTh from "../components/utils/SortableTh.vue";
 	import {
 		createItem,
@@ -134,6 +140,7 @@
 		getItems,
 		getShop,
 		getShopChoices,
+		getShopWarrantyItems,
 		updateItem,
 	} from "../api/client.js";
 
@@ -144,7 +151,8 @@
 	const alert = reactive({ message: "", type: "success" });
 
 	const targetItem = ref(null);
-	const shopDetails = ref({});
+	const targetShop = ref(null);
+	const warrantyItems = ref({});
 	const sortBy = ref("id");
 	const sortDir = ref("asc");
 
@@ -203,6 +211,15 @@
 	}
 
 	async function openShopDetails(shopId) {
-		shopDetails.value[shopId] = await getShop(shopId);
+		const item = items.value.find((i) => i.shop_id === shopId);
+		targetShop.value = item
+			? { id: shopId, name: item.shop_name }
+			: { id: shopId };
+
+		if (!warrantyItems.value[shopId]) {
+			warrantyItems.value[shopId] = await getShopWarrantyItems(shopId);
+		}
+
+		targetShop.value = await getShop(shopId);
 	}
 </script>

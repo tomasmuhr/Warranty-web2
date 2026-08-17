@@ -19,6 +19,60 @@
 
 	<hr />
 
+	<div class="row g-2 align-items-end justify-content-center mb-3 text-start">
+		<div class="col-auto">
+			<label
+				class="form-label form-label-sm mb-0"
+				for="filterStatus"
+				>Status</label
+			>
+			<select
+				id="filterStatus"
+				v-model="filters.status"
+				class="form-select form-select-sm"
+				@change="applyFilters"
+			>
+				<option value="">All</option>
+				<option value="active">Active</option>
+				<option value="expiring">Expiring soon</option>
+				<option value="expired">Expired</option>
+			</select>
+		</div>
+		<div class="col-auto">
+			<label
+				class="form-label form-label-sm mb-0"
+				for="filterShop"
+				>Shop</label
+			>
+			<select
+				id="filterShop"
+				v-model="filters.shop"
+				class="form-select form-select-sm"
+				@change="applyFilters"
+			>
+				<option value="">All shops</option>
+				<option value="none">No shop linked</option>
+				<option
+					v-for="shop in shopChoices"
+					:key="shop.id"
+					:value="String(shop.id)"
+				>
+					{{ shop.name }}
+				</option>
+			</select>
+		</div>
+		<div class="col-auto">
+			<button
+				type="button"
+				class="btn btn-sm btn-outline-secondary"
+				:disabled="!hasActiveFilters"
+				@click="clearFilters"
+			>
+				Clear filters
+			</button>
+		</div>
+	</div>
+
 	<table class="table table-sm table-striped table-hover table-responsive">
 		<thead>
 			<tr>
@@ -96,6 +150,14 @@
 			</tr>
 		</thead>
 		<tbody>
+			<tr v-if="!items.length">
+				<td
+					colspan="11"
+					class="text-center text-muted"
+				>
+					No items match the current filters.
+				</td>
+			</tr>
 			<ItemRow
 				v-for="item in items"
 				:key="item.id"
@@ -127,7 +189,7 @@
 </template>
 
 <script setup>
-	import { onMounted, reactive, ref } from "vue";
+	import { computed, onMounted, reactive, ref } from "vue";
 	import BaseMessage from "../components/base/BaseMessage.vue";
 	import PaginationBar from "../components/layout/PaginationBar.vue";
 	import ItemForm from "../components/items/ItemForm.vue";
@@ -155,6 +217,22 @@
 	const warrantyItems = ref({});
 	const sortBy = ref("id");
 	const sortDir = ref("asc");
+	const filters = reactive({ status: "", shop: "" });
+
+	const hasActiveFilters = computed(
+		() => !!filters.status || !!filters.shop,
+	);
+
+	function buildFilterParams() {
+		return {
+			status: filters.status || undefined,
+			shopId:
+				filters.shop && filters.shop !== "none"
+					? Number(filters.shop)
+					: undefined,
+			noShop: filters.shop === "none",
+		};
+	}
 
 	function showAlert(message, type = "success") {
 		alert.message = message;
@@ -171,8 +249,23 @@
 		loadItems(1);
 	}
 
+	function applyFilters() {
+		loadItems(1);
+	}
+
+	function clearFilters() {
+		filters.status = "";
+		filters.shop = "";
+		loadItems(1);
+	}
+
 	async function loadItems(targetPage = page.value) {
-		const data = await getItems(targetPage, sortBy.value, sortDir.value);
+		const data = await getItems(
+			targetPage,
+			sortBy.value,
+			sortDir.value,
+			buildFilterParams(),
+		);
 		items.value = data.items;
 		page.value = data.page;
 		pages.value = data.pages;

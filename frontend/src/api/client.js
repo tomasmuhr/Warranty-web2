@@ -15,10 +15,13 @@ export async function getStats() {
 //   const { data } = await api.get('/items', { params: { page } })
 //   return data
 // }
-export async function getItems(page = 1, sortBy = 'id', sortDir = 'asc') {
-  const { data } = await api.get('/items', {
-    params: { page, sort_by: sortBy, sort_dir: sortDir },
-  })
+export async function getItems(page = 1, sortBy = 'id', sortDir = 'asc', filters = {}) {
+  const params = { page, sort_by: sortBy, sort_dir: sortDir }
+  if (filters.status) params.status = filters.status
+  if (filters.shopId) params.shop_id = filters.shopId
+  if (filters.noShop) params.no_shop = true
+
+  const { data } = await api.get('/items', { params })
   return data
 }
 

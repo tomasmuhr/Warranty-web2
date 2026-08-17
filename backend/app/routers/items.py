@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import delete, func, select, asc, desc
 from sqlalchemy.orm import Session, joinedload
@@ -9,6 +11,8 @@ from app.schemas import ItemCreate, ItemRead, ItemUpdate, PaginatedItems
 from app.utils import expiration_date, paginate
 
 router = APIRouter(prefix="/items", tags=["items"])
+
+EXPIRING_SOON_DAYS = 30
 
 SORTABLE_COLUMNS = {
     "id": Item.id,
@@ -42,6 +46,35 @@ def _item_read(item: Item) -> ItemRead:
     )
 
 
+def _warranty_filter_conditions(status: str | None) -> list:
+    if not status:
+        return []
+
+    today = date.today()
+    if status == "active":
+        return [WarrantyDate.expiration_date >= today]
+    if status == "expired":
+        return [WarrantyDate.expiration_date < today]
+    if status == "expiring":
+        return [
+            WarrantyDate.expiration_date >= today,
+            WarrantyDate.expiration_date <= today + timedelta(days=EXPIRING_SOON_DAYS),
+        ]
+    return []
+
+
+def _shop_filter_conditions(shop_id: int | None, no_shop: bool) -> list:
+    if no_shop:
+        return [Item.shop_id.is_(None)]
+    if shop_id is not None:
+        return [Item.shop_id == shop_id]
+    return []
+
+
+def _needs_warranty_join(sort_by: str, status: str | None) -> bool:
+    return sort_by in {"purchase_date", "warranty_months", "expiration_date"} or bool(status)
+
+
 # @router.get("", response_model=PaginatedItems)
 # def list_items(page: int = Query(1, ge=1), db: Session = Depends(get_db)):
 #     per_page = settings.records_per_page
@@ -63,10 +96,25 @@ def list_items(
     page: int = Query(1, ge=1),
     sort_by: str = Query("id"),
     sort_dir: str = Query("asc", pattern="^(asc|desc)$"),
+    status: str | None = Query(None, pattern="^(active|expiring|expired)$"),
+    shop_id: int | None = Query(None, ge=1),
+    no_shop: bool = Query(False),
     db: Session = Depends(get_db),
 ):
     per_page = settings.records_per_page
-    total = db.scalar(select(func.count()).select_from(Item)) or 0
+    filter_conditions = [
+        *_shop_filter_conditions(shop_id, no_shop),
+        *_warranty_filter_conditions(status),
+    ]
+    needs_warranty = _needs_warranty_join(sort_by, status)
+
+    count_stmt = select(func.count()).select_from(Item)
+    if needs_warranty:
+        count_stmt = count_stmt.join(WarrantyDate, Item.id == WarrantyDate.item_id)
+    if filter_conditions:
+        count_stmt = count_stmt.where(*filter_conditions)
+
+    total = db.scalar(count_stmt) or 0
     meta = paginate(total, page, per_page)
 
     column = SORTABLE_COLUMNS.get(sort_by, Item.id)
@@ -74,8 +122,14 @@ def list_items(
     query = select(Item).options(joinedload(Item.dates), joinedload(Item.shop))
     if sort_by == "shop_name":
         query = query.outerjoin(Shop)
-    elif sort_by in {"purchase_date", "warranty_months", "expiration_date"}:
-        query = query.outerjoin(WarrantyDate)
+    if needs_warranty:
+        if status:
+            query = query.join(WarrantyDate, Item.id == WarrantyDate.item_id)
+        else:
+            query = query.outerjoin(WarrantyDate)
+    if filter_conditions:
+        query = query.where(*filter_conditions)
+
     items = (
         db.scalars(
             query.order_by(order, Item.id)  # stable tie-breaker

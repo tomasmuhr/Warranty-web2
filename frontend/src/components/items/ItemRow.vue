@@ -7,6 +7,8 @@
 				v-if="item.shop_name"
 				type="button"
 				class="btn btn-outline-primary btn-sm"
+				data-bs-toggle="modal"
+				data-bs-target="#shopItemsModal"
 				@click="$emit('open-shop', item.shop_id)"
 			>
 				{{ item.shop_name }}

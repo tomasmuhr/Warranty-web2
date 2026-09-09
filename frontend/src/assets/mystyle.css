@@ -12,18 +12,6 @@
 	font-weight: bold;
 }
 
-.text-justified {
-	text-align: justify;
-}
-
-.text-small {
-	font-size: smaller;
-}
-
-.text-red {
-	color: red;
-}
-
 .table-sm {
 	font-size: smaller;
 	vertical-align: middle;
@@ -46,18 +34,6 @@
 
 .card-link:hover {
 	color: inherit;
-}
-
-.no-top-border {
-	border-top: none !important;
-}
-
-.green {
-	background-color: lightgreen;
-}
-
-.red {
-	background-color: lightcoral;
 }
 
 th.sortable {

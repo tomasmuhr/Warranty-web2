@@ -4,9 +4,8 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
 from app.models import Item, Shop, WarrantyDate
-from app.routers.items import _item_read
-from app.routers.shops import _shop_read
 from app.schemas import SearchResults
+from app.serializers import item_read, shop_read
 
 router = APIRouter(prefix="/search", tags=["search"])
 
@@ -40,6 +39,6 @@ def search(query: str = Query("", min_length=1), db: Session = Depends(get_db)):
 
     return SearchResults(
         query=query,
-        items=[_item_read(item) for item in item_rows],
-        shops=[_shop_read(shop, count) for shop, count in shop_rows],
+        items=[item_read(item) for item in item_rows],
+        shops=[shop_read(shop, count) for shop, count in shop_rows],
     )

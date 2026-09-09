@@ -11,29 +11,10 @@ class ShopBase(BaseModel):
     zip_code: str = ""
 
 
-class ShopCreate(ShopBase):
-    pass
-
-
-class ShopUpdate(ShopBase):
-    pass
-
-
 class ShopRead(ShopBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    items_count: int = 0
-
-
-class ShopSummary(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: int
-    name: str
-    street: str = ""
-    city: str = ""
-    zip_code: str = ""
     items_count: int = 0
 
 
@@ -51,14 +32,6 @@ class ItemBase(BaseModel):
     comment: str = ""
     purchase_date: date
     warranty_months: int = Field(ge=1)
-
-
-class ItemCreate(ItemBase):
-    pass
-
-
-class ItemUpdate(ItemBase):
-    pass
 
 
 class ItemRead(BaseModel):

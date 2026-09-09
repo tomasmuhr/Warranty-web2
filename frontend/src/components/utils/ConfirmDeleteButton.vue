@@ -51,7 +51,7 @@
 		confirmClass: { type: String, default: "btn-primary" },
 	});
 
-	defineEmits(["confirm", "close"]);
+	defineEmits(["confirm"]);
 
 	const modalId = `confirm-${Math.random().toString(36).slice(2)}`;
 </script>

@@ -1,3 +1,6 @@
+import shutil
+from pathlib import Path
+
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
@@ -5,13 +8,7 @@ from sqlalchemy.orm import Session
 from app.config import settings
 from app.database import get_db
 from app.schemas import DatabaseInfo, MessageResponse, PurgeRequest
-from app.utils import (
-    allowed_backup_filename,
-    export_database,
-    purge_shops,
-    purge_warranties,
-    restore_database,
-)
+from app.utils import purge_shops, purge_warranties, restore_database
 
 router = APIRouter(prefix="/database", tags=["database"])
 
@@ -25,7 +22,8 @@ def database_info():
 def database_export():
     if not settings.database_path.exists():
         raise HTTPException(status_code=404, detail="Database file not found")
-    backup_path = export_database()
+    backup_path = settings.db_dir / settings.db_name_backup
+    shutil.copyfile(settings.database_path, backup_path)
     return FileResponse(
         path=backup_path,
         filename=settings.db_name_backup,
@@ -35,7 +33,7 @@ def database_export():
 
 @router.post("/restore", response_model=MessageResponse)
 async def database_restore(file: UploadFile = File(...)):
-    if not file.filename or not allowed_backup_filename(file.filename):
+    if not file.filename or Path(file.filename).name != settings.db_name_backup:
         raise HTTPException(
             status_code=400,
             detail=f"Invalid backup filename. Expected {settings.db_name_backup}",

@@ -196,6 +196,7 @@
 	import ItemRow from "../components/items/ItemRow.vue";
 	import ShopItems from "../components/shops/ShopItems.vue";
 	import SortableTh from "../components/utils/SortableTh.vue";
+	import { useAlert } from "../composables/useAlert";
 	import {
 		createItem,
 		deleteItem,
@@ -210,7 +211,7 @@
 	const shopChoices = ref([]);
 	const page = ref(1);
 	const pages = ref(1);
-	const alert = reactive({ message: "", type: "success" });
+	const { alert, showAlert } = useAlert();
 
 	const targetItem = ref(null);
 	const targetShop = ref(null);
@@ -232,11 +233,6 @@
 					: undefined,
 			noShop: filters.shop === "none",
 		};
-	}
-
-	function showAlert(message, type = "success") {
-		alert.message = message;
-		alert.type = type;
 	}
 
 	function toggleSort(column) {

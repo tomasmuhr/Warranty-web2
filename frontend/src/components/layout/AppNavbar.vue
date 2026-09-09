@@ -69,7 +69,7 @@
 </template>
 
 <script setup>
-	import { computed, ref } from "vue";
+	import { ref } from "vue";
 	import { useRoute, useRouter } from "vue-router";
 
 	const route = useRoute();

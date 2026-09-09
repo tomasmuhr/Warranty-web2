@@ -1,17 +1,9 @@
-from datetime import date, datetime
-from typing import List, Optional
+from datetime import date
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-
-
-class Settings(Base):
-    __tablename__ = "settings"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    dark_mode: Mapped[int] = mapped_column()
 
 
 class Shop(Base):
@@ -22,7 +14,7 @@ class Shop(Base):
     street: Mapped[str] = mapped_column()
     city: Mapped[str] = mapped_column()
     zip_code: Mapped[str] = mapped_column()
-    items: Mapped[List["Item"]] = relationship(back_populates="shop")
+    items: Mapped[list["Item"]] = relationship(back_populates="shop")
 
 
 class Item(Base):
@@ -31,12 +23,12 @@ class Item(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
     receipt_nr: Mapped[str] = mapped_column()
-    amount: Mapped[Optional[float]] = mapped_column()
-    price_per_piece: Mapped[Optional[float]] = mapped_column()
+    amount: Mapped[float | None] = mapped_column()
+    price_per_piece: Mapped[float | None] = mapped_column()
     comment: Mapped[str] = mapped_column()
-    shop_id: Mapped[Optional[int]] = mapped_column(ForeignKey("shop.id"), nullable=True)
-    shop: Mapped[Optional["Shop"]] = relationship(back_populates="items")
-    dates: Mapped[List["WarrantyDate"]] = relationship(
+    shop_id: Mapped[int | None] = mapped_column(ForeignKey("shop.id"), nullable=True)
+    shop: Mapped["Shop | None"] = relationship(back_populates="items")
+    dates: Mapped[list["WarrantyDate"]] = relationship(
         back_populates="item", cascade="all, delete-orphan"
     )
 

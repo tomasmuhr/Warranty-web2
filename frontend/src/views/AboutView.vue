@@ -4,7 +4,7 @@
 		<br /><br />
 		<h4>The app</h4>
 		<p>This is the Warranty App.</p>
-		<p class="text-small">
+		<p class="small">
 			App version history:<br />
 			&nbsp;&nbsp;&nbsp;1.0 - initial version<br />
 			&nbsp;&nbsp;&nbsp;2.0 - reworked to Vue + FastAPI
@@ -16,8 +16,8 @@
 		<table class="table table-responsive text-center">
 			<tbody>
 				<tr>
-					<td class="no-top-border">Tomáš Mühr</td>
-					<td class="no-top-border">
+					<td class="border-top-0">Tomáš Mühr</td>
+					<td class="border-top-0">
 						<p>
 							Currently working as a GIS Specialist with interest
 							in Python programming language.<br />

@@ -5,7 +5,7 @@
 		@close="alert.message = ''"
 	/>
 
-	<div class="text-center text-small card card-title">
+	<div class="text-center small card card-title">
 		<p>{{ dbPath }}</p>
 	</div>
 
@@ -64,8 +64,8 @@
 				</div>
 				<div class="modal-body">
 					<p>Restore the database by previously backed up file.</p>
-					<h5 class="text-red">Warning!</h5>
-					<p class="text-red">
+					<h5 class="text-danger">Warning!</h5>
+					<p class="text-danger">
 						The content of your current database will be overwritten
 						by selected file.
 					</p>
@@ -108,8 +108,8 @@
 						Delete warranties without linked shops and/or shops
 						without linked warranties.
 					</p>
-					<h5 class="text-red">Warning!</h5>
-					<p class="text-red">
+					<h5 class="text-danger">Warning!</h5>
+					<p class="text-danger">
 						The records will be permanently deleted.
 					</p>
 					<div class="form-check">
@@ -168,9 +168,10 @@
 </template>
 
 <script setup>
-	import { onMounted, reactive, ref } from "vue";
+	import { onMounted, ref } from "vue";
 	import BaseMessage from "../components/base/BaseMessage.vue";
-	import BaseCard from "../components/base/BaseCard.vue"; // Adjust path as needed
+	import BaseCard from "../components/base/BaseCard.vue";
+	import { useAlert } from "../composables/useAlert";
 	import {
 		exportDatabaseUrl,
 		getDatabaseInfo,
@@ -179,14 +180,9 @@
 	} from "../api/client";
 
 	const dbPath = ref("");
-	const alert = reactive({ message: "", type: "success" });
+	const { alert, showAlert } = useAlert();
 	const purgeOption = ref("both");
 	const restoreFile = ref(null);
-
-	function showAlert(message, type = "success") {
-		alert.message = message;
-		alert.type = type;
-	}
 
 	onMounted(async () => {
 		const info = await getDatabaseInfo();

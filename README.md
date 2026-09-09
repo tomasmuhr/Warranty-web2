@@ -42,13 +42,24 @@ The app uses a **Vue 3** frontend and **FastAPI** backend with the SQLite databa
     ```bash
     cp .env-sample .env
     ```
-3. Start services:
+3. Start services — pick one:
+
+    **Production-style** (nginx frontend, no hot reload; uses only `compose.yml`):
     ```bash
     docker compose -f compose.yml up
     ```
-4. Open the app:
-    - **Frontend (Vue):** http://localhost:8080
-    - **Backend API (FastAPI):** http://localhost:8000/api/health
+    - **Frontend:** http://localhost:8080
+    - **Backend API:** http://localhost:8000/api/health
+    - **API docs:** http://localhost:8000/docs
+
+    **Local Docker with hot reload** (merges `compose.override.yml`; Vite + uvicorn `--reload`):
+    ```bash
+    docker compose up
+    # or, for file sync + rebuild on dependency changes:
+    docker compose watch
+    ```
+    - **Frontend (Vite):** http://localhost:5173
+    - **Backend API:** http://localhost:8000/api/health
     - **API docs:** http://localhost:8000/docs
 
 The SQLite database is stored in `./instance/warranty.db` and is shared with the FastAPI container via a volume mount.

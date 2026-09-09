@@ -1,20 +1,17 @@
 from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from os import getenv
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    app_env: str = getenv("APP_ENV", "production")
-    db_name: str = getenv("DB_NAME", "warranty.db")
-    db_name_backup: str = getenv("DB_NAME_BACKUP", "warranty_bkp.db")
-    db_dir: Path = Path(getenv("DB_DIR", "instance"))
-    records_per_page: int = int(getenv("RECORDS_PER_PAGE", 30))
-    cors_origins: str = getenv(
-        "CORS_ORIGINS", "http://localhost:5173,http://localhost:8080"
-    )
+    app_env: str = "production"
+    db_name: str = "warranty.db"
+    db_name_backup: str = "warranty_bkp.db"
+    db_dir: Path = Path("instance")
+    records_per_page: int = 30
+    cors_origins: str = "http://localhost:5173,http://localhost:8080"
 
     @property
     def database_path(self) -> Path:
@@ -33,6 +30,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
-if settings.app_env == "development":
-    settings.records_per_page = 5

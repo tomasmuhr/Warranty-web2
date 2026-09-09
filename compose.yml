@@ -5,7 +5,6 @@ services:
     image: warranty-backend:prod
     build:
       context: ./backend
-      target: production
     container_name: warranty-fastapi
     restart: always
     ports:

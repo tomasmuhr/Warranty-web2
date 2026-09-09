@@ -3,11 +3,20 @@ services:
     image: warranty-backend:dev
     build:
       context: ./backend
-      target: development
     restart: "no"
     environment:
       - APP_ENV=development
       - RECORDS_PER_PAGE=5
+    command:
+      [
+        "uvicorn",
+        "app.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--reload",
+      ]
     # volumes: # replaced by develop.watch
     #   - ./backend:/app
     develop:
@@ -30,7 +39,7 @@ services:
       context: ./frontend
       target: development
     restart: "no"
-    ports:
+    ports: !override
       - "5173:5173"
     # volumes: # replaced by develop.watch
     #   - ./frontend:/app

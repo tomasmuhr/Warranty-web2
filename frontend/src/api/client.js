@@ -11,10 +11,6 @@ export async function getStats() {
   return data
 }
 
-// export async function getItems(page = 1) {
-//   const { data } = await api.get('/items', { params: { page } })
-//   return data
-// }
 export async function getItems(page = 1, sortBy = 'id', sortDir = 'asc', filters = {}) {
   const params = { page, sort_by: sortBy, sort_dir: sortDir }
   if (filters.status) params.status = filters.status

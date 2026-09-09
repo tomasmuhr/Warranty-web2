@@ -100,12 +100,13 @@
 </template>
 
 <script setup>
-	import { onMounted, reactive, ref } from "vue";
+	import { onMounted, ref } from "vue";
 	import BaseMessage from "../components/base/BaseMessage.vue";
 	import PaginationBar from "../components/layout/PaginationBar.vue";
 	import ShopForm from "../components/shops/ShopForm.vue";
 	import ShopDelete from "../components/shops/ShopDelete.vue";
 	import ShopItems from "../components/shops/ShopItems.vue";
+	import { useAlert } from "../composables/useAlert";
 	import {
 		createShop,
 		deleteShop,
@@ -117,16 +118,10 @@
 	const shops = ref([]);
 	const page = ref(1);
 	const pages = ref(1);
-	const alert = reactive({ message: "", type: "success" });
+	const { alert, showAlert } = useAlert();
 
-	// Replaces individual form dictionaries
 	const targetShop = ref(null);
 	const warrantyItems = ref({});
-
-	function showAlert(message, type = "success") {
-		alert.message = message;
-		alert.type = type;
-	}
 
 	async function loadShops(targetPage = page.value) {
 		const data = await getShops(targetPage);

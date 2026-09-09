@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 from dateutil.relativedelta import relativedelta
-from sqlalchemy import delete, func, or_, select, update
+from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -22,15 +22,6 @@ def expiration_date(purchase_date, warranty_months: int):
     return purchase_date + relativedelta(months=warranty_months)
 
 
-def get_shop_choices(db: Session) -> list[str]:
-    rows = db.scalars(select(Shop.name).order_by(func.lower(Shop.name))).all()
-    return list(rows)
-
-
-def allowed_backup_filename(filename: str) -> bool:
-    return Path(filename).name == settings.db_name_backup
-
-
 def is_warranty_app_database(path: Path) -> bool:
     try:
         conn = sqlite3.connect(path)
@@ -39,7 +30,7 @@ def is_warranty_app_database(path: Path) -> bool:
         cur.close()
         conn.close()
         table_names = {table[0] for table in tables}
-        return {"item", "date", "shop", "settings"}.issubset(table_names)
+        return {"item", "date", "shop"}.issubset(table_names)
     except sqlite3.Error:
         return False
 
@@ -62,12 +53,6 @@ def purge_shops(db: Session) -> None:
     if empty_shop_ids:
         db.execute(delete(Shop).where(Shop.id.in_(empty_shop_ids)))
         db.commit()
-
-
-def export_database() -> Path:
-    backup_path = settings.db_dir / settings.db_name_backup
-    shutil.copyfile(settings.database_path, backup_path)
-    return backup_path
 
 
 def restore_database(upload_path: Path) -> None:
@@ -100,10 +85,6 @@ def shop_warranty_items(db: Session, shop_id: int) -> tuple[list, list]:
         if r.expiration_date < today
     ]
     return under, out
-
-
-def clear_shop_from_items(db: Session, shop_id: int) -> None:
-    db.execute(update(Item).where(Item.shop_id == shop_id).values(shop_id=None))
 
 
 def delete_shop_linked_items(db: Session, shop_id: int) -> None:
